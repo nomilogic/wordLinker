@@ -55,18 +55,38 @@ const APP_SECRET = process.env.APP_SECRET;
 
 app.listen(app.get('port'), () => {
     console.log('Node app is running on port', app.get('port'));
-    //  checkCombs();
+    // checkCombs();
 });
 var fullArray = [];
+var newFullArray = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+]
 
 function checkCombs() {
     for (let wordsIndex = 0; wordsIndex < words.length; wordsIndex++) {
         const _word = words[wordsIndex];
-        var word = [];
+        var word = {};
         word.values = [];
+        word.words = [];
 
+        console.log(newFullArray[_word.length].indexOf(_word), "hello");
 
         if (_word.length > 1 && _word.length < 10) {
+
+            if (newFullArray[_word.length].indexOf(_word) == -1) {
+                newFullArray[_word.length].push(_word);
+            } else {
+                continue;
+
+            }
             var newComb = Combinatorics.permutationCombination(String(_word).split("")).toArray();
             for (let index = 0; index < newComb.length; index++) {
                 const element = newComb[index];
@@ -74,17 +94,18 @@ function checkCombs() {
                 //console.log(words.indexOf(element.toString()));
 
                 var stringword = element.toString().replace(/\,/g, '');
-                if (words.indexOf(stringword) != -1) {
+                if (words.indexOf(stringword) != -1 && word.words.indexOf(stringword) == -1) {
                     console.log(stringword);
-                    word.push(stringword)
+                    word.words.push(stringword)
                     if (stringword.length == _word.length) {
                         word.values.push(stringword);
-
+                        newFullArray[_word.length].push(stringword);
                     }
                 }
             }
         }
         fullArray.push(word);
+        console.log(fullArray);
     }
     fs.writeFile('game-words.json', JSON.stringify(fullArray), (err) => {
         // throws an error, you could also catch it here
